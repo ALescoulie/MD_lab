@@ -7,7 +7,9 @@
 #include "random"
 #include "cmath"
 
-Thermostat::Thermostat() = default;
+Thermostat::Thermostat(double temp) {
+    this->temp = temp;
+}
 
 void Thermostat::radomize_velocities(CubicBox *box) {
     std::random_device rd;

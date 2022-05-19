@@ -68,26 +68,27 @@ InputParser::InputParser(char *fname) {
     } else {
         throw "missing record_freq in input file";
     }
+
+    if (config["Temperature"]) {
+        temp = config["Temperature"].as<double>();
+    } else {
+        throw "missing record_freq in input file";
+    }
 }
 
 Simulation* InputParser::init_sim() {
     ForceField* f;
-    Boundary* b;
     Thermostat* t;
 
     if (forces == "lj") {
         f = new ForceField(dt);
     }
 
-    if (bounds == "periodic") {
-        b = new Boundary(size);
-    }
-
     if (thermo == "random") {
-        t = new Thermostat();
+        t = new Thermostat(temp);
     }
 
     auto sim = new Simulation(top, trj, f, t, size,
-                              dt, time, freq);
+                              temp, dt, time, freq);
     return sim;
 }

@@ -14,8 +14,9 @@ yaml = [
     "force_field: lj",
     "boundary: periodic",
     "thermostat: random",
-    "# Time units in fs distance units in nm",
+    "# Time units in fs, distance units in nm, temp units in K",
     "box_size:"
+    "temp"
     "timestep:"
     "time:"
     "record_freq:"

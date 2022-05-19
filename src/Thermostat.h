@@ -11,7 +11,7 @@
 class Thermostat {
 public:
     const double kb = 8.31151e51;
-    Thermostat();
+    Thermostat(double temp);
     static void radomize_velocities(CubicBox* box);
     double measure_temp(CubicBox* box);
 private:

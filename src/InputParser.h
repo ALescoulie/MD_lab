@@ -25,6 +25,7 @@ private:
     double size;
     double dt;
     double time;
+    double temp;
     int freq;
 };
 
