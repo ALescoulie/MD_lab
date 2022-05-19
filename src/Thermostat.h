@@ -12,13 +12,12 @@ class Thermostat {
 public:
     const double kb = 8.31151e51;
     Thermostat(double temp);
-    static void radomize_velocities(CubicBox* box);
+    void randomize_velocities(CubicBox* box);
     double measure_temp(CubicBox* box);
 private:
+    double temp;
     const Vec3 z_vec = Vec3(0, 0, 0);
-    Thermostat* thermostat{};
     static Vec3 calc_avg_vel(CubicBox* box);
 };
-
 
 #endif //MD_LAB_THERMOSTAT_H

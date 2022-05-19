@@ -24,7 +24,7 @@ void Simulation::run() {
     field->add_box(box);
 
     // Setting initial conditions
-    Thermostat::radomize_velocities(box);
+    therm->randomize_velocities(box);
 
     // Running simulation
     int step_count = 0;
