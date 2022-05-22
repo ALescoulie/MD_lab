@@ -89,8 +89,8 @@ Simulation* InputParser::init_sim() {
     if (thermo == "random") {
         t = new Thermostat(temp, dt, periodic);
     }
-
-    auto sim = new Simulation(top, trj, f, t, size,
+    auto trj_file = new chemfiles::Trajectory(trj, 'w');
+    auto sim = new Simulation(top, trj_file, f, t, size,
                               temp, dt, time, freq);
     return sim;
 }

@@ -4,11 +4,11 @@
 
 #include "Simulation.h"
 
-Simulation:: Simulation(std::string topology, std::string trajectory,
+Simulation:: Simulation(std::string topology, chemfiles::Trajectory* trajectory,
                         ForceField *forces, Thermostat* thermo, double temp,
                        double size, double ts, double time, int st_frame) {
     this->top = topology;
-    this->trj = chemfiles::Trajectory(trajectory, 'w');
+    this->trj = trajectory;
     this->field = forces;
     this->size = size;
     this->time = time;
@@ -34,12 +34,13 @@ void Simulation::run() {
     for (int i = 0; i < n_frames; i++) {
         field->run_forces();
         if (step_count == frame_step) {
-            write_frame( box);
+            write_frame(box);
             step_count = -1;
         }
         step_count++;
     }
-    trj.close();
+    delete box;
+    trj->close();
 }
 
 void Simulation::write_frame(CubicBox *box) {
@@ -50,5 +51,5 @@ void Simulation::write_frame(CubicBox *box) {
         frame.add_atom(chemfiles::Atom(box->get_atom(i).id), {pos.x, pos.y, pos.z});
     }
 
-    trj.write(frame);
+    trj->write(frame);
 }

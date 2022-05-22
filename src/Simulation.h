@@ -19,14 +19,14 @@
 
 class Simulation {
 public:
-    Simulation(std::string topology, std::string trajectory,
+    Simulation(std::string topology, chemfiles::Trajectory* trajectory,
                ForceField* forces, Thermostat* thermo,double temp,
                double size, double ts, double time, int st_frame);
     void run();
 private:
     void write_frame(CubicBox* box);
     std::string top;
-    chemfiles::Trajectory trj = chemfiles::Trajectory("defualt.xyz");
+    chemfiles::Trajectory* trj;
     std::list<Atom> atoms;
     double size;
     double dt;
