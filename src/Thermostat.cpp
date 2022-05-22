@@ -7,8 +7,9 @@
 #include "random"
 #include "cmath"
 
-Thermostat::Thermostat(double temp) {
+Thermostat::Thermostat(double temp, double dt) {
     this->temp = temp;
+    this->dt = temp;
 }
 
 void Thermostat::randomize_velocities(CubicBox *box) {
@@ -33,6 +34,20 @@ void Thermostat::randomize_velocities(CubicBox *box) {
     for (int i = 0; i < box->get_n_atoms(); i++) {
         vel[i].vec_scale(t_scale);
     }
+
+    // Getting prev positions
+    auto prev_pos = static_cast<Vec3*>(malloc(sizeof(double) *
+                                         box->get_n_atoms() * box->get_n_atoms()));
+
+    for (int i = 0; i < box->get_n_atoms(); i++) {
+        prev_pos[i].vec_scale(0);
+        prev_pos[i].vec_add(box->get_pos(i));
+        auto c_vel = box->get_vel(i);
+        c_vel.vec_scale(dt);
+        prev_pos[i].vec_sub(c_vel);
+    }
+
+    box->set_prev_pos(prev_pos);
 }
 
 Vec3 Thermostat::calc_avg_vel(CubicBox *box) {

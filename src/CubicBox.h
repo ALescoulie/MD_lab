@@ -26,6 +26,7 @@ public:
     void add_atom(Atom atom);
     void update_pos(Vec3* new_pos);
     void update_vel(Vec3* new_vel);
+    void set_prev_pos(Vec3* n_prev_pos);
     int get_n_atoms();
     Vec3 get_pos(int ind);
     Vec3 get_prev_pos(int ind);

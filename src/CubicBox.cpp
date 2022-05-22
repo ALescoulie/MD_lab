@@ -58,3 +58,6 @@ Vec3 CubicBox::get_mom(int ind) {
     return mom;
 }
 
+void CubicBox::set_prev_pos(Vec3 *n_prev_pos) {
+    prev_pos = n_prev_pos;
+}
