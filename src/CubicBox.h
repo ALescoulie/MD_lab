@@ -16,14 +16,21 @@ class CubicBox {
 private:
     int n_atoms;
     std::vector<Atom> atoms;
+    Vec3* positions = nullptr;
+    Vec3* prev_pos = nullptr;
+    Vec3* velocities = nullptr;
     Boundary bounds;
     double size;
 public:
-    CubicBox(double size);
+    CubicBox(double size, Boundary bounds);
     void add_atom(Atom atom);
-    void update_pos(int mol_ind, Vec3 new_pos);
-    void update_vel(int mol_ind, Vec3 new_vel);
+    void update_pos(Vec3* new_pos);
+    void update_vel(Vec3* new_vel);
     int get_n_atoms();
+    Vec3 get_pos(int ind);
+    Vec3 get_prev_pos(int ind);
+    Vec3 get_vel(int ind);
+    Vec3 get_mom(int ind);
     Atom get_atom(int ind);
 };
 

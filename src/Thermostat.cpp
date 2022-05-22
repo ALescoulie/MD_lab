@@ -14,25 +14,24 @@ Thermostat::Thermostat(double temp) {
 void Thermostat::randomize_velocities(CubicBox *box) {
     std::random_device rd;
     std::mt19937 gen(rd);
+    auto vel = static_cast<Vec3*>(malloc(sizeof(double) *
+                                               box->get_n_atoms() * box->get_n_atoms()));
     std::uniform_real_distribution<> dis(-1000, 1000);
     for (int i = 0; i < box->get_n_atoms(); i++) {
-        Vec3 r_vel = Vec3(dis(gen), dis(gen), dis(gen));
-        box->update_vel(i, r_vel);
+        vel[i] = Vec3(dis(gen), dis(gen), dis(gen));
     }
+    box->update_vel(vel);
+
     auto avg = calc_avg_vel(box);
     for (int i = 0; i < box->get_n_atoms(); i++) {
-        auto cur_vel = box->get_atom(i).get_vel();
-        cur_vel.vec_sub(avg);
-        box->update_vel(i, cur_vel);
+        vel[i].vec_sub(avg);
     }
 
     double t_cur = measure_temp(box);
     double t_scale = sqrt(temp/t_cur);
 
     for (int i = 0; i < box->get_n_atoms(); i++) {
-        auto cur_vel = box->get_atom(i).get_vel();
-        cur_vel.vec_scale(t_scale);
-        box->update_vel(i, cur_vel);
+        vel[i].vec_scale(t_scale);
     }
 }
 
