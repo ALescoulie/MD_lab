@@ -14,7 +14,7 @@
 
 class InputParser {
 public:
-    InputParser(char* fname);
+    InputParser(std::string fname);
     Simulation* init_sim();
 private:
     std::string top;

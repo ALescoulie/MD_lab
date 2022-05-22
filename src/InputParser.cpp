@@ -12,7 +12,7 @@
 
 #include "yaml-cpp/yaml.h"
 
-InputParser::InputParser(char *fname) {
+InputParser::InputParser(std::string fname) {
 
     YAML::Node config = YAML::LoadFile(fname);
 
@@ -70,8 +70,8 @@ InputParser::InputParser(char *fname) {
         throw "missing record_freq in input file";
     }
 
-    if (config["Temperature"]) {
-        temp = config["Temperature"].as<double>();
+    if (config["temp"]) {
+        temp = config["temp"].as<double>();
     } else {
         throw "missing record_freq in input file";
     }
