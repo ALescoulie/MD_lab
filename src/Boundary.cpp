@@ -16,4 +16,3 @@ Vec3 Boundary::apply_bounds(Vec3 calc_pos) {
     calc_pos.z -= (size * round(calc_pos.z/size));
     return calc_pos;
 }
-

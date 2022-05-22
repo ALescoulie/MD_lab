@@ -13,6 +13,9 @@ private:
     double size;
 public:
     Boundary(double size);
+
+    Boundary();
+
     Vec3 apply_bounds(Vec3 calc_pos);
 };
 
