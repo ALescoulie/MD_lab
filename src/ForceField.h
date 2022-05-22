@@ -254,6 +254,7 @@ private:
     double dt;
     double** calc_dists();
     CubicBox* box = nullptr;
+    Boundary* bounds;
     double cutoff = 1.75;
     std::map<std::string, int> id_table;
     std::map<std::string, int> init_id_table();
@@ -261,7 +262,7 @@ private:
     double eps_ij(int i, int j);
     double sig_ij(int i, int j);
 public:
-    ForceField(double dt);
+    ForceField(double dt, Boundary* bounds);
     void add_box(CubicBox* box);
     void run_forces();
 

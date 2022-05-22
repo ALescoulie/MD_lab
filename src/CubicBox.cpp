@@ -1,14 +1,15 @@
 //
 // Created by Alia Lescoulie on 5/16/22.
 //
+#include "Atom.h"
+#include "Boundary.h"
 
 #include "CubicBox.h"
-#include "Atom.h"
 
-CubicBox::CubicBox(double size, Boundary bounds) {
+
+CubicBox::CubicBox(double size) {
     this->size = size;
     atoms = std::vector<Atom>();
-    this->bounds = bounds;
 }
 
 void CubicBox::add_atom(Atom atom) {
@@ -60,4 +61,24 @@ Vec3 CubicBox::get_mom(int ind) {
 
 void CubicBox::set_prev_pos(Vec3 *n_prev_pos) {
     prev_pos = n_prev_pos;
+}
+
+double CubicBox::get_size() {
+    return size;
+}
+
+CubicBox::~CubicBox() {
+    if (positions != nullptr) {
+        free(positions);
+    }
+
+    if (prev_pos != nullptr) {
+        free(prev_pos);
+    }
+
+    if (velocities != nullptr) {
+        free(velocities);
+    }
+
+    atoms.clear();
 }

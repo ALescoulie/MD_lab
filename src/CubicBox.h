@@ -19,10 +19,9 @@ private:
     Vec3* positions = nullptr;
     Vec3* prev_pos = nullptr;
     Vec3* velocities = nullptr;
-    Boundary bounds;
     double size;
 public:
-    CubicBox(double size, Boundary bounds);
+    CubicBox(double size);
     void add_atom(Atom atom);
     void update_pos(Vec3* new_pos);
     void update_vel(Vec3* new_vel);
@@ -33,6 +32,8 @@ public:
     Vec3 get_vel(int ind);
     Vec3 get_mom(int ind);
     Atom get_atom(int ind);
+    double get_size();
+    ~CubicBox();
 };
 
 #endif //MD_LAB_CUBICBOX_H

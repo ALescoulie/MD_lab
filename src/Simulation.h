@@ -14,7 +14,6 @@
 #include "Boundary.h"
 #include "Thermostat.h"
 #include "Reader.h"
-#include "Writer.h"
 #include "CubicBox.h"
 
 
@@ -25,8 +24,9 @@ public:
                double size, double ts, double time, int st_frame);
     void run();
 private:
+    void write_frame(CubicBox* box);
     std::string top;
-    std::string trj;
+    chemfiles::Trajectory trj = chemfiles::Trajectory("defualt.xyz");
     std::list<Atom> atoms;
     double size;
     double dt;

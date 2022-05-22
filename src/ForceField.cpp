@@ -5,11 +5,13 @@
 #include "ForceField.h"
 #include "CubicBox.h"
 #include "Atom.h"
+#include "Boundary.h"
 
 #include <vector>
 
-ForceField::ForceField(double dt) {
+ForceField::ForceField(double dt, Boundary* bounds) {
     this->dt = dt;
+    this->bounds = bounds;
     init_id_table();
 }
 
@@ -87,6 +89,7 @@ void ForceField::run_forces() {
         auto f_term = Vec3(forces[i].x, forces[i].y, forces[i].z);
         f_term.vec_scale(dtsq/box->get_atom(i).get_mass());
         n_pos[i].vec_add(f_term);
+        n_pos[i] = bounds->apply_bounds(n_pos[i]);
         n_vel[i].vec_scale(0);
         n_vel[i].vec_add(n_pos[i]);
         n_vel[i].vec_sub(box->get_prev_pos(i));
@@ -145,6 +148,7 @@ std::map<std::string, int> ForceField::init_id_table() {
     id_table["Se"] = 33;
     id_table["Br"] = 34;
     id_table["Kr"] = 35;
+    return id_table;
 }
 
 double ForceField::lj_pot(double r, double s, double e) {

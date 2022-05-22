@@ -5,11 +5,12 @@
 #include <string>
 
 #include "InputParser.h"
-#include "Boundary.h"
 #include "ForceField.h"
 #include "Simulation.h"
+#include "Boundary.h"
+#include "Thermostat.h"
 
-#include "yaml-cpp/node/parse.h"
+#include "yaml-cpp/yaml.h"
 
 InputParser::InputParser(char *fname) {
 
@@ -79,13 +80,14 @@ InputParser::InputParser(char *fname) {
 Simulation* InputParser::init_sim() {
     ForceField* f;
     Thermostat* t;
+    auto periodic = new Boundary(size);
 
     if (forces == "lj") {
-        f = new ForceField(dt);
+        f = new ForceField(dt, periodic);
     }
 
     if (thermo == "random") {
-        t = new Thermostat(temp);
+        t = new Thermostat(temp, dt, periodic);
     }
 
     auto sim = new Simulation(top, trj, f, t, size,

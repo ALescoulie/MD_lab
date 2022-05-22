@@ -7,19 +7,20 @@
 #include "random"
 #include "cmath"
 
-Thermostat::Thermostat(double temp, double dt) {
+Thermostat::Thermostat(double temp, double dt, Boundary* bounds) {
     this->temp = temp;
-    this->dt = temp;
+    this->dt = dt;
+    this->bounds = bounds;
 }
 
 void Thermostat::randomize_velocities(CubicBox *box) {
-    std::random_device rd;
-    std::mt19937 gen(rd);
+    std::default_random_engine rd;
+
     auto vel = static_cast<Vec3*>(malloc(sizeof(double) *
                                                box->get_n_atoms() * box->get_n_atoms()));
-    std::uniform_real_distribution<> dis(-1000, 1000);
+    std::uniform_real_distribution<double> dis(-1000, 1000);
     for (int i = 0; i < box->get_n_atoms(); i++) {
-        vel[i] = Vec3(dis(gen), dis(gen), dis(gen));
+        vel[i] = Vec3(dis(rd), dis(rd), dis(rd));
     }
     box->update_vel(vel);
 
@@ -45,6 +46,7 @@ void Thermostat::randomize_velocities(CubicBox *box) {
         auto c_vel = box->get_vel(i);
         c_vel.vec_scale(dt);
         prev_pos[i].vec_sub(c_vel);
+        prev_pos[i] = bounds->apply_bounds(prev_pos[i]);
     }
 
     box->set_prev_pos(prev_pos);

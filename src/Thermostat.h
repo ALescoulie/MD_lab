@@ -11,10 +11,11 @@
 class Thermostat {
 public:
     const double kb = 8.31151e51;
-    Thermostat(double temp, double dt);
+    Thermostat(double temp, double dt, Boundary* bounds);
     void randomize_velocities(CubicBox* box);
     double measure_temp(CubicBox* box);
 private:
+    Boundary* bounds;
     double temp;
     double dt;
     const Vec3 z_vec = Vec3(0, 0, 0);

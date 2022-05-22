@@ -12,10 +12,7 @@ class Boundary {
 private:
     double size;
 public:
-    Boundary(double size);
-
-    Boundary();
-
+    explicit Boundary(double size);
     Vec3 apply_bounds(Vec3 calc_pos);
 };
 

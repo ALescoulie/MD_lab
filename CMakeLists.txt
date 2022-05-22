@@ -36,6 +36,9 @@ add_executable(
         src/InputParser.h
         src/Thermostat.cpp
         src/Thermostat.h
-        src/Writer.cpp src/Writer.h src/CubicBox.cpp src/CubicBox.h src/Reader.cpp src/Reader.h)
+        src/CubicBox.cpp
+        src/CubicBox.h
+        src/Reader.cpp
+        src/Reader.h)
 
 target_link_libraries(MD_lab yaml-cpp chemfiles)

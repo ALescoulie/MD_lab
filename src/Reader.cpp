@@ -10,7 +10,7 @@
 
 Reader::Reader(std::string fname, double size) {
     this->fname = fname;
-    this->box = new CubicBox(size, Boundary(size));
+    this->box = new CubicBox(size);
     construct_box();
 }
 

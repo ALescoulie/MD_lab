@@ -8,7 +8,7 @@ Simulation:: Simulation(std::string topology, std::string trajectory,
                         ForceField *forces, Thermostat* thermo, double temp,
                        double size, double ts, double time, int st_frame) {
     this->top = topology;
-    this->trj = trajectory;
+    this->trj = chemfiles::Trajectory(trajectory, 'w');
     this->field = forces;
     this->size = size;
     this->time = time;
@@ -32,11 +32,23 @@ void Simulation::run() {
     int n_frames = (int)(time/dt);
 
     for (int i = 0; i < n_frames; i++) {
-        field->update_forces();
+        field->run_forces();
         if (step_count == frame_step) {
-            //trj_writer.write_frame(); Not yet implemented
+            write_frame( box);
             step_count = -1;
         }
         step_count++;
     }
+    trj.close();
+}
+
+void Simulation::write_frame(CubicBox *box) {
+    auto frame = chemfiles::Frame(chemfiles::UnitCell({size, size, size}));
+
+    for (int i = 0; i < box->get_n_atoms(); i++) {
+        auto pos = box->get_pos(i);
+        frame.add_atom(chemfiles::Atom(box->get_atom(i).id), {pos.x, pos.y, pos.z});
+    }
+
+    trj.write(frame);
 }

@@ -6,6 +6,7 @@ public:
     double y;
     double z;
 
+    Vec3();
     Vec3(double x, double y, double z);
 
     void vec_add(Vec3 vec);
