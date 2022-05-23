@@ -54,8 +54,12 @@ void ForceField::run_forces() {
             if (0 < dists(i, j) && dists(i, j) <= cutoff) {
                 double e = eps_ij(id_table[box->get_atom(i).id],
                                   id_table[box->get_atom(j).id]);
+                e *= 10;
                 double s = sig_ij(id_table[box->get_atom(i).id],
                                   id_table[box->get_atom(j).id]);
+                // converting ev to Da * nm^3 fs^-2
+
+                s *= 9.65833e-5;
                 forces(i, j) = lj_pot(dists(i, j), s, e);
             } else {
                 forces(i, j) = 0;

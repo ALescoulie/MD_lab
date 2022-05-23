@@ -16,7 +16,7 @@ if __name__ == "__main__":
     n_atoms = int(sys.argv[3])
     fname = sys.argv[4]
 
-    dist = 10*size/n_atoms
+    dist = size/n_atoms
 
     with open(fname, "w") as f:
         f.write(f"{n_atoms**3}\n\n")
