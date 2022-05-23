@@ -18,7 +18,7 @@ void Thermostat::randomize_velocities(CubicBox *box) {
 
     auto vel = static_cast<Vec3*>(malloc(sizeof(double) *
                                                box->get_n_atoms() * box->get_n_atoms()));
-    std::uniform_real_distribution<double> dis(-1000, 1000);
+    std::uniform_real_distribution<double> dis(-1, 1);
     for (int i = 0; i < box->get_n_atoms(); i++) {
         vel[i] = Vec3(dis(rd), dis(rd), dis(rd));
     }
@@ -55,9 +55,10 @@ void Thermostat::randomize_velocities(CubicBox *box) {
 Vec3 Thermostat::calc_avg_vel(CubicBox *box) {
     auto avg = Vec3(0, 0, 0);
     for (int i = 0; i < box->get_n_atoms(); i++) {
-        auto tmp = box->get_atom(i).get_vel();
+        auto tmp = box->get_vel(i);
         avg.vec_add(tmp);
     }
+
     avg.vec_scale((double)1/box->get_n_atoms());
     return avg;
 }
@@ -66,9 +67,10 @@ double Thermostat::measure_temp(CubicBox *box) {
     double t = 0;
     int df = box->get_n_atoms()*3;
     for (int i = 0; i < box->get_n_atoms(); i++) {
-        double v = box->get_atom(i).get_vel().vec_dist(z_vec);
+        double v = box->get_vel(i).vec_dist(z_vec);
         double m = box->get_atom(i).get_mass();
         t += (m * v * v)/(kb * df);
     }
+
     return t;
 }

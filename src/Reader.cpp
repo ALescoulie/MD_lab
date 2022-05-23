@@ -15,20 +15,22 @@ Reader::Reader(std::string fname, double size) {
 }
 
 void Reader::construct_box() {
-    chemfiles::Trajectory file(fname);
-    auto topology = chemfiles::Topology();
-    chemfiles::Frame frame = file.read();
-    file.set_topology(topology);
+    auto trajectory = chemfiles::Trajectory(fname);
+    trajectory.set_topology(fname);
+
+    auto frame = trajectory.read();
+
     auto positions = frame.positions();
-    Vec3* pos = (Vec3*)malloc(sizeof(Vec3) * topology.size());
-    for (size_t i = 0; i < topology.size(); i++) {
+    Vec3* pos = (Vec3*)malloc(sizeof(Vec3) * frame.size());
+    for (size_t i = 0; i < frame.size(); i++) {
         pos[i].x = positions[i][0];
         pos[i].y = positions[i][1];
         pos[i].z = positions[i][2];
-        box->add_atom(Atom(topology[i].name(), &pos[i], nullptr,
-                      topology[i].mass()));
+        box->add_atom(Atom(frame[i].name(), &pos[i], nullptr,
+                      frame[i].mass()));
     }
     box->update_pos(pos);
+    trajectory.close();
 }
 
 CubicBox* Reader::get_box() {

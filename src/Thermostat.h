@@ -10,7 +10,7 @@
 
 class Thermostat {
 public:
-    const double kb = 8.31151e51;
+    const double kb = 8.31428e-12;
     Thermostat(double temp, double dt, Boundary* bounds);
     void randomize_velocities(CubicBox* box);
     double measure_temp(CubicBox* box);

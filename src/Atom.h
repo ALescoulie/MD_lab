@@ -14,8 +14,6 @@ public:
     void set_pos(Vec3 *n_pos);
     void set_vel(Vec3 *n_vel);
     Vec3 get_pos();
-    Vec3 get_mom();
-    Vec3 get_vel();
     double get_mass();
     std::string id;
 private:

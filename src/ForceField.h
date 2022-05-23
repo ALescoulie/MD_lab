@@ -10,6 +10,8 @@
 #include <cmath>
 #include <map>
 
+#include "Eigen/Dense"
+
 const double lj_sig[] = {0.5523570,
                          0.4989030,
                          2.2807000,
@@ -248,11 +250,12 @@ const double lj_epsilon[] = {4.4778900,
                              1.2468978,
                              0.0193493};
 
+using Eigen::MatrixXd;
 
 class ForceField {
 private:
     double dt;
-    double** calc_dists();
+    MatrixXd calc_dists();
     CubicBox* box = nullptr;
     Boundary* bounds;
     double cutoff = 1.75;

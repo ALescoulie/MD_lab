@@ -30,17 +30,6 @@ Vec3 Atom::get_pos() {
     return tmp;
 }
 
-Vec3 Atom::get_mom() {
-    Vec3 tmp = Vec3(vel->x, vel->y, vel->z);
-    tmp.vec_scale(mass);
-    return tmp;
-}
-
 double Atom::get_mass() {
     return mass;
-}
-
-Vec3 Atom::get_vel() {
-    Vec3 tmp = Vec3(vel->x, vel->y, vel->z);
-    return tmp;
 }

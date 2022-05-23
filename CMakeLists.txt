@@ -16,8 +16,14 @@ FetchContent_Declare(chemfiles
         GIT_TAG "600768a4d4ba155a07e8c422177ea1e8655b810b"
         )
 
+FetchContent_Declare(eigen
+        GIT_REPOSITORY "https://gitlab.com/libeigen/eigen.git"
+        GIT_TAG "481a4a8c319640a3689be11c66b38cf1f9dc50b2"
+        )
+
 FetchContent_MakeAvailable(yaml-cpp)
 FetchContent_MakeAvailable(chemfiles)
+FetchContent_MakeAvailable(eigen)
 
 add_executable(
         MD_lab
@@ -41,4 +47,4 @@ add_executable(
         src/Reader.cpp
         src/Reader.h)
 
-target_link_libraries(MD_lab yaml-cpp chemfiles)
+target_link_libraries(MD_lab yaml-cpp chemfiles eigen)

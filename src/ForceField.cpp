@@ -4,10 +4,13 @@
 
 #include "ForceField.h"
 #include "CubicBox.h"
-#include "Atom.h"
 #include "Boundary.h"
 
 #include <vector>
+
+#include "Eigen/Dense"
+
+using Eigen::MatrixXd;
 
 ForceField::ForceField(double dt, Boundary* bounds) {
     this->dt = dt;
@@ -17,20 +20,20 @@ ForceField::ForceField(double dt, Boundary* bounds) {
 
 void ForceField::add_box(CubicBox *box) {
     this->box = box;
+
 }
 
-double** ForceField::calc_dists() {
+MatrixXd ForceField::calc_dists() {
     if (box != nullptr) {
-        auto dists = static_cast<double **>(malloc(sizeof(double) *
-                box->get_n_atoms() * box->get_n_atoms()));
+        auto size = box->get_n_atoms();
+        MatrixXd dists(size, size);
 
-        for (int i = 0; i < box->get_n_atoms(); i++) {
+        for (int i = 0; i < size; i++) {
             for (int j = 0; j < box->get_n_atoms(); j++) {
-                if (i <= j) {
-                    dists[i][j] = 0;
+                if (j <= i) {
+                    dists(i, j) = 0;
                 } else {
-                    dists[i][j] = box->get_atom(i).get_pos().vec_dist(
-                            box->get_atom(j).get_pos());
+                    dists(i, j) = box->get_pos(i).vec_dist(box->get_pos(j));
                 }
             }
         }
@@ -43,35 +46,36 @@ double** ForceField::calc_dists() {
 
 void ForceField::run_forces() {
     auto dists = calc_dists();
-    auto force = static_cast<double **>(malloc(sizeof(double) *
-            box->get_n_atoms() * box->get_n_atoms()));
+    MatrixXd forces(box->get_n_atoms(), box->get_n_atoms());
 
     // Calculating forces on each particle
     for (int i = 0; i < box->get_n_atoms(); i++) {
         for (int j = 0; j < box->get_n_atoms(); j++) {
-            if (dists[i][j] >= cutoff) {
+            if (0 < dists(i, j) && dists(i, j) <= cutoff) {
                 double e = eps_ij(id_table[box->get_atom(i).id],
                                   id_table[box->get_atom(j).id]);
                 double s = sig_ij(id_table[box->get_atom(i).id],
                                   id_table[box->get_atom(j).id]);
-                force[i][j] = lj_pot(dists[i][j], s, e);
+                forces(i, j) = lj_pot(dists(i, j), s, e);
             } else {
-                force[i][j] = 0;
+                forces(i, j) = 0;
             }
         }
     }
 
     // Computing net force on each particle
-    auto forces = std::vector<Vec3>(box->get_n_atoms());
+    auto net_forces = std::vector<Vec3>(box->get_n_atoms());
     for (int i = 0; i < box->get_n_atoms(); i++) {
-        forces[i].vec_scale(0);
+        net_forces[i].vec_scale(0);
 
-        for (int j = 0; i < box->get_n_atoms(); i++) {
-            auto tmp = box->get_atom(i).get_pos();
-            tmp.vec_sub(box->get_atom(j).get_pos());
-            tmp.norm();
-            tmp.vec_scale(force[i][j]);
-            forces[i].vec_add(tmp);
+        for (int j = 0; j < box->get_n_atoms(); j++) {
+            if (forces(i, j) != 0) {
+                auto tmp = box->get_pos(i);
+                tmp.vec_sub(box->get_pos(j));
+                tmp.norm();
+                tmp.vec_scale(forces(i, j));
+                net_forces[i].vec_add(tmp);
+            }
         }
     }
 
@@ -86,7 +90,7 @@ void ForceField::run_forces() {
         n_pos[i].vec_add(box->get_pos(i));
         n_pos[i].vec_scale(2);
         n_pos[i].vec_sub(box->get_prev_pos(i));
-        auto f_term = Vec3(forces[i].x, forces[i].y, forces[i].z);
+        auto f_term = Vec3(net_forces[i].x, net_forces[i].y, net_forces[i].z);
         f_term.vec_scale(dtsq/box->get_atom(i).get_mass());
         n_pos[i].vec_add(f_term);
         n_pos[i] = bounds->apply_bounds(n_pos[i]);
@@ -97,9 +101,6 @@ void ForceField::run_forces() {
     }
     box->update_pos(n_pos);
     box->update_vel(n_vel);
-
-    free(dists);
-    free(force);
 }
 
 double ForceField::eps_ij(int i, int j) {
